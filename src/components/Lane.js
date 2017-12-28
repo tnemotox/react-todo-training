@@ -5,8 +5,20 @@ import {
 import Card from './Card';
 
 export default class Lane extends React.Component {
+
+  // orderByの昇順にソート
+  compare(a, b) {
+    let comparison = 0;
+    if (a.orderBy > b.orderBy) {
+      comparison = 1;
+    } else {
+      comparison = -1;
+    }
+    return comparison;
+  }
+
   render() {
-    const cards = this.props.cards.map(card => {
+    const cards = this.props.cards.sort(this.compare).map(card => {
       return (
         <Card
           key={card.id}
