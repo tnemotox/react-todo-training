@@ -1,21 +1,43 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import Lane from './components/Lane'
 
-class App extends Component {
+export default class App extends React.Component {
+
   render() {
+    const LANE = {
+      TODO: {
+        ID: 1,
+        LABEL: 'TODO'
+      },
+      WIP: {
+        ID: 2,
+        LABEL: 'WIP'
+      },
+      DONE: {
+        ID: 3,
+        LABEL: 'DONE'
+      },
+    };
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div className="app">
+        <Lane
+          id={LANE.TODO.ID}
+          label={LANE.TODO.LABEL}
+          cards={this.props.cards.filter(card => card.status === LANE.TODO.ID)}
+        />
+        <Lane
+          id={LANE.WIP.ID}
+          label={LANE.WIP.LABEL}
+          cards={this.props.cards.filter(card => card.status === LANE.WIP.ID)}
+        />
+        <Lane
+          id={LANE.DONE.ID}
+          label={LANE.DONE.LABEL}
+          cards={this.props.cards.filter(card => card.status === LANE.DONE.ID)}
+        />
       </div>
     );
   }
 }
-
-export default App;

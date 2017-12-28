@@ -88,5 +88,6 @@ fabric.properties
 # Sonarlint plugin
 .idea/sonarlint
 .idea/vcs.xml
+.idea
 
 # End of https://www.gitignore.io/api/webstorm
