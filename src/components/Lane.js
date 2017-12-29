@@ -8,13 +8,7 @@ export default class Lane extends React.Component {
 
   // orderByの昇順にソート
   compare(a, b) {
-    let comparison = 0;
-    if (a.orderBy > b.orderBy) {
-      comparison = 1;
-    } else {
-      comparison = -1;
-    }
-    return comparison;
+    return a.orderBy > b.orderBy ? 1 : -1;
   }
 
   render() {
@@ -23,6 +17,7 @@ export default class Lane extends React.Component {
         <Card
           key={card.id}
           id={card.id}
+          laneId={this.props.id}
           label={card.label}
           description={card.description}
           tasks={card.tasks}
