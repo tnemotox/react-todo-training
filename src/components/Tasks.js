@@ -2,8 +2,22 @@ import React from 'react';
 import {
   Checkbox
 } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 
 export default class Tasks extends React.Component {
+
+  /**
+   * @type {{
+   *  cardId: タスクが所属するカードのID,
+   *  tasks: タスク,
+   *  completeCheck: Cardコンポーネントがもつタスクが全てチェック済か確認するための関数
+   * }}
+   */
+  static propTypes = {
+    cardId: PropTypes.number.isRequired,
+    tasks: PropTypes.array,
+    completeCheck: PropTypes.func.isRequired
+  }
 
   constructor(props) {
     super(props);
@@ -36,7 +50,7 @@ export default class Tasks extends React.Component {
   render() {
     const tasks = this.state.tasks.sort(this.compare).map(task => (
       <Checkbox key={task.id} onClick={this.toggleTask.bind(this, task)} checked={task.isDone} readOnly>
-        { task.isDone ? <del>{task.label}</del> : task.label}
+        {task.isDone ? <del>{task.label}</del> : task.label}
       </Checkbox>
     ));
 
