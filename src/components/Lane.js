@@ -20,8 +20,7 @@ class Lane extends React.Component {
   static propTypes = {
     cards: PropTypes.array.isRequired,
     id: PropTypes.number.isRequired,
-    label: PropTypes.string.isRequired,
-    moveCard: PropTypes.func.isRequired
+    label: PropTypes.string.isRequired
   }
 
   constructor(props) {
@@ -31,10 +30,28 @@ class Lane extends React.Component {
     }
   }
 
+  /**
+   * レーンのstateを更新する
+   * @param cards カード
+   */
   updateLaneState(cards) {
     this.setState({
       cards: cards
     });
+  }
+
+  /**
+   * カードを移動した時に呼び出される関数
+   * @param sourceCard ドラッグ元のProps
+   * @param targetComponent ドロップ先のコンポーネント
+   */
+  moveCard(sourceCard, targetComponent) {
+    // カードがドラッグされる前に属していたレーンから削除する
+    let sourceLaneCards = sourceCard.laneCards.filter(card => card.id !== sourceCard.id);
+    sourceCard.updateLaneState(sourceLaneCards);
+    // カードがドロップされたレーンに追加する
+    let targetLaneCards = [].concat(targetComponent.state.cards, sourceCard);
+    targetComponent.updateLaneState(targetLaneCards);
   }
 
   // orderByの昇順にソート
@@ -43,7 +60,6 @@ class Lane extends React.Component {
   }
 
   render() {
-    const { connectDropTarget } = this.props;
     const cards = this.state.cards.sort(this.compare).map(card => {
       return (
         <Card
@@ -62,7 +78,7 @@ class Lane extends React.Component {
 
     return (
       <Col className={"lane"} md={4} xs={4}
-           ref={instance => connectDropTarget(findDOMNode(instance))}>
+           ref={instance => this.props.connectDropTarget(findDOMNode(instance))}>
         <h2>{this.props.label}</h2>
         {cards}
       </Col>
@@ -74,13 +90,14 @@ export default DropTarget(
   'CARD',
   {
     /**
-     * Cardコンポーネントがドロップされた時に呼び出される関数
+     * Cardコンポーネントがドロップされた時に呼び出されるハンドラ
      * @param props CardコンポーネントのProps
-     * @param monitor ドロップ先となるLaneコンポーネントの情報
+     * @param monitor ドロップ先のモニタリング情報
      * @param component ドロップ先となるLaneコンポーネントのインスタンス
      */
     drop(props, monitor, component) {
-      props.moveCard(monitor.getItem(), component);
+      // monitor.getItem()では、beginDragで返却した値を取得できる
+      component.moveCard(monitor.getItem(), component);
     },
   },
   (connect, monitor) => ({

@@ -14,9 +14,8 @@ class App extends React.Component {
     cards: PropTypes.array
   }
 
-  constructor(props) {
-    super(props);
-    this.LANE = {
+  render() {
+    const LANE = {
       TODO: {
         ID: 1,
         LABEL: 'TODO'
@@ -30,38 +29,23 @@ class App extends React.Component {
         LABEL: 'DONE'
       },
     };
-  }
 
-  // カードを移動した時に呼び出される関数
-  moveCard(sourceCard, component) {
-    // カードがドラッグされる前に属していたレーンから削除する
-    let sourceLaneCards = sourceCard.laneCards.filter(card => card.id !== sourceCard.id);
-    sourceCard.updateLaneState(sourceLaneCards);
-    // カードがドロップされたレーンに追加する
-    let targetLaneCards = [].concat(component.state.cards, sourceCard);
-    component.updateLaneState(targetLaneCards);
-  }
-
-  render() {
     return (
       <div className="app">
         <Lane
-          id={this.LANE.TODO.ID}
-          label={this.LANE.TODO.LABEL}
-          cards={this.props.cards.filter(card => card.status === this.LANE.TODO.ID)}
-          moveCard={this.moveCard.bind(this)}
+          id={LANE.TODO.ID}
+          label={LANE.TODO.LABEL}
+          cards={this.props.cards.filter(card => card.status === LANE.TODO.ID)}
         />
         <Lane
-          id={this.LANE.WIP.ID}
-          label={this.LANE.WIP.LABEL}
-          cards={this.props.cards.filter(card => card.status === this.LANE.WIP.ID)}
-          moveCard={this.moveCard.bind(this)}
+          id={LANE.WIP.ID}
+          label={LANE.WIP.LABEL}
+          cards={this.props.cards.filter(card => card.status === LANE.WIP.ID)}
         />
         <Lane
-          id={this.LANE.DONE.ID}
-          label={this.LANE.DONE.LABEL}
-          cards={this.props.cards.filter(card => card.status === this.LANE.DONE.ID)}
-          moveCard={this.moveCard.bind(this)}
+          id={LANE.DONE.ID}
+          label={LANE.DONE.LABEL}
+          cards={this.props.cards.filter(card => card.status === LANE.DONE.ID)}
         />
       </div>
     );
