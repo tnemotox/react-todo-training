@@ -120,6 +120,9 @@ Card = DragSource(
       if (!monitor.didDrop()) {
         props.actions.rollbackState(props.id);
       }
+      else {
+        props.actions.commitState(props.id);
+      }
     }
   },
   (connect, monitor) => ({

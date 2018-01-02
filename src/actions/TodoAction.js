@@ -45,4 +45,9 @@ export default createActions({
       cardId: id
     }
   },
+  'COMMIT_STATE': (id) => {
+    return {
+      cardId: id
+    }
+  },
 });

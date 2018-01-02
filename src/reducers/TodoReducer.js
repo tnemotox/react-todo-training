@@ -147,4 +147,10 @@ export default handleActions({
     return state.get(cardIdx).get('cache');
   },
 
+  [TodoAction.commitState]: (state, action) => {
+    const { cardId } = action.payload;
+    const cardIdx = state.findIndex(card => card.id === cardId);
+    return state.setIn([cardIdx, 'cache'], null);
+  },
+
 }, List());
