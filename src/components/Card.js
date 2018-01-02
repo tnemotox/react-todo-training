@@ -2,9 +2,13 @@ import React from 'react';
 import { findDOMNode } from 'react-dom';
 import {
   Panel,
-  Accordion
+  Accordion,
+  Button
 } from 'react-bootstrap';
-import { DragSource } from 'react-dnd';
+import {
+  DragSource,
+  DropTarget
+} from 'react-dnd';
 import PropTypes from 'prop-types';
 import Tasks from './Tasks';
 
@@ -15,9 +19,10 @@ class Card extends React.Component {
    *  connectDragSource: ReactDndのドラッグ元,
    *  description: カードの説明,
    *  id: ID,
+   *  isDone: カードの完了状態
    *  label: カード名,
    *  laneCards: カードが所属するレーンがもつ全てのカード,
-   *  laneId: レーンID,
+   *  status: カードのステータス,
    *  orderBy: 並び順,
    *  tasks: カードがもつタスク,
    *  updateLaneState: ドロップ時にLaneコンポーネントのstateを更新するための関数を親から受け取る
@@ -27,33 +32,18 @@ class Card extends React.Component {
     connectDragSource: PropTypes.func.isRequired,
     description: PropTypes.string,
     id: PropTypes.number.isRequired,
+    isDone: PropTypes.bool.isRequired,
     label: PropTypes.string.isRequired,
     laneCards: PropTypes.array.isRequired,
-    laneId: PropTypes.number.isRequired,
+    status: PropTypes.number.isRequired,
     orderBy: PropTypes.number.isRequired,
-    tasks: PropTypes.array,
-    updateLaneState: PropTypes.func.isRequired
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      // tasksの各要素のisDoneが1つでもtrueであればtrue
-      isDone: props.tasks.map(task => task.isDone).every(item => item)
-    }
-  }
-
-  completeCheck(tasks) {
-    this.setState({
-      // tasksの各要素のisDoneが1つでもtrueであればtrue
-      isDone: tasks.map(task => task.isDone).every(item => item)
-    })
+    tasks: PropTypes.array
   }
 
   // カードが所属しているレーンに応じて色を付与
   cardColor() {
     let color;
-    switch (this.props.laneId) {
+    switch (this.props.status) {
       case 1:
         color = 'info';
         break;
@@ -69,26 +59,51 @@ class Card extends React.Component {
     return color;
   }
 
+  test() {
+    console.log('test');
+  }
+
   render() {
+    const draggingId = this.props.draggingCard ? this.props.draggingCard.id : -1;
     return (
-      <Accordion ref={instance => this.props.connectDragSource(findDOMNode(instance))}>
+      <Accordion ref={instance => {
+        const node = findDOMNode(instance);
+        this.props.connectDragSource(node);
+        this.props.connectDropTarget(node);
+      }}>
         <Panel
           bsStyle={this.cardColor()}
           header={
             // 全てのタスクが完了していれば、カードも取り消し線を引く
-            this.state.isDone ?
-              <del>{this.props.label}</del> :
-              <span>{this.props.label}</span>
-          }>
-          {<strong>{this.props.description}</strong>}
-          <Tasks cardId={this.props.id} tasks={this.props.tasks} completeCheck={this.completeCheck.bind(this)}/>
+            this.props.isDone ?
+              <del>{this.props.label}</del> : <span>{this.props.label}</span>
+          }
+          style={{ opacity: draggingId === this.props.id ? 0.5 : 1 }}
+        >
+          {
+            <div className="card-description">
+              <strong>{
+                this.props.description ?
+                  this.props.description :
+                  <span style={{ opacity: 0.2 }}>説明文がありません</span>
+              }</strong>
+            </div>
+          }
+          <Tasks
+            cardId={this.props.id}
+            tasks={this.props.tasks}
+            actions={this.props.actions}
+          />
+          <Button bsStyle="success">タスク追加</Button>&emsp;
+          <Button bsStyle="primary">カード編集</Button>&emsp;
+          <Button bsStyle="danger">カード削除</Button>
         </Panel>
       </Accordion>
     );
   }
 }
 
-export default DragSource(
+Card = DragSource(
   'CARD',
   {
     /**
@@ -97,9 +112,29 @@ export default DragSource(
      * @returns {*} DropTargetに渡す
      */
     beginDrag(props) {
+      props.actions.cacheState(props.id);
       return props;
+    },
+
+    endDrag(props, monitor) {
+      if (!monitor.didDrop()) {
+        props.actions.rollbackState(props.id);
+      }
     }
   },
   (connect, monitor) => ({
     connectDragSource: connect.dragSource(),
+    draggingCard: monitor.getItem(),
   }))(Card);
+export default DropTarget(
+  'CARD',
+  {
+    hover(props, monitor, component) {
+      if (props.id !== monitor.getItem().id) {
+        component.props.actions.moveCardHover(monitor.getItem(), props);
+      }
+    }
+  },
+  (connect, monitor) => ({
+    connectDropTarget: connect.dropTarget(),
+  }))(Card)
