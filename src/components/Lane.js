@@ -23,55 +23,25 @@ class Lane extends React.Component {
     label: PropTypes.string.isRequired
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      cards: props.cards
-    }
-  }
-
-  /**
-   * レーンのstateを更新する
-   * @param cards カード
-   */
-  updateLaneState(cards) {
-    this.setState({
-      cards: cards
-    });
-  }
-
-  /**
-   * カードを移動した時に呼び出される関数
-   * @param sourceCard ドラッグ元のProps
-   * @param targetComponent ドロップ先のコンポーネント
-   */
-  moveCard(sourceCard, targetComponent) {
-    // カードがドラッグされる前に属していたレーンから削除する
-    let sourceLaneCards = sourceCard.laneCards.filter(card => card.id !== sourceCard.id);
-    sourceCard.updateLaneState(sourceLaneCards);
-    // カードがドロップされたレーンに追加する
-    let targetLaneCards = [].concat(targetComponent.state.cards, sourceCard);
-    targetComponent.updateLaneState(targetLaneCards);
-  }
-
   // orderByの昇順にソート
   compare(a, b) {
     return a.orderBy > b.orderBy ? 1 : -1;
   }
 
   render() {
-    const cards = this.state.cards.sort(this.compare).map(card => {
+    const cards = this.props.cards.sort(this.compare).map(card => {
       return (
         <Card
           description={card.description}
           id={card.id}
+          isDone={card.isDone}
           key={card.id}
           label={card.label}
-          laneCards={this.state.cards}
+          laneCards={this.props.cards}
           laneId={this.props.id}
           orderBy={card.orderBy}
           tasks={card.tasks}
-          updateLaneState={this.updateLaneState.bind(this)}
+          actions={this.props.actions}
         />
       );
     });
@@ -97,7 +67,7 @@ export default DropTarget(
      */
     drop(props, monitor, component) {
       // monitor.getItem()では、beginDragで返却した値を取得できる
-      component.moveCard(monitor.getItem(), component);
+      component.props.actions.moveCard(monitor.getItem(), component.props.id);
     },
   },
   (connect, monitor) => ({

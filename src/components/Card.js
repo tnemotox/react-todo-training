@@ -27,27 +27,12 @@ class Card extends React.Component {
     connectDragSource: PropTypes.func.isRequired,
     description: PropTypes.string,
     id: PropTypes.number.isRequired,
+    isDone: PropTypes.bool.isRequired,
     label: PropTypes.string.isRequired,
     laneCards: PropTypes.array.isRequired,
     laneId: PropTypes.number.isRequired,
     orderBy: PropTypes.number.isRequired,
     tasks: PropTypes.array,
-    updateLaneState: PropTypes.func.isRequired
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      // tasksの各要素のisDoneが1つでもtrueであればtrue
-      isDone: props.tasks.map(task => task.isDone).every(item => item)
-    }
-  }
-
-  completeCheck(tasks) {
-    this.setState({
-      // tasksの各要素のisDoneが1つでもtrueであればtrue
-      isDone: tasks.map(task => task.isDone).every(item => item)
-    })
   }
 
   // カードが所属しているレーンに応じて色を付与
@@ -76,12 +61,11 @@ class Card extends React.Component {
           bsStyle={this.cardColor()}
           header={
             // 全てのタスクが完了していれば、カードも取り消し線を引く
-            this.state.isDone ?
-              <del>{this.props.label}</del> :
-              <span>{this.props.label}</span>
+            this.props.isDone ?
+              <del>{this.props.label}</del> : <span>{this.props.label}</span>
           }>
           {<strong>{this.props.description}</strong>}
-          <Tasks cardId={this.props.id} tasks={this.props.tasks} completeCheck={this.completeCheck.bind(this)}/>
+          <Tasks cardId={this.props.id} tasks={this.props.tasks} actions={this.props.actions} />
         </Panel>
       </Accordion>
     );
