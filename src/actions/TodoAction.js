@@ -4,7 +4,7 @@ export default createActions({
 
   'ADD_NEW_CARD': () => {
   },
-  'ADD_CARDS': (cards) => {
+  'ADD_CARDS': cards => {
     return {
       cards
     }
@@ -35,17 +35,17 @@ export default createActions({
       taskId
     }
   },
-  'CACHE_STATE': (id) => {
+  'CACHE_STATE': id => {
     return {
       cardId: id
     }
   },
-  'ROLLBACK_STATE': (id) => {
+  'ROLLBACK_STATE': id => {
     return {
       cardId: id
     }
   },
-  'COMMIT_STATE': (id) => {
+  'COMMIT_STATE': id => {
     return {
       cardId: id
     }

@@ -59,10 +59,6 @@ class Card extends React.Component {
     return color;
   }
 
-  test() {
-    console.log('test');
-  }
-
   render() {
     const draggingId = this.props.draggingCard ? this.props.draggingCard.id : -1;
     return (
