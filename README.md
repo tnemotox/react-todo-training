@@ -8,7 +8,7 @@ Reactに関する知識の整理をするための素振り。
 [x] react-dnd  
 [x] react-redux  
 [x] redux-actions  
-[ ] immutable  
-[ ] react-router  
+[ ] immutable  
+[ ] react-router  
 [ ] react-router-redux  
 [ ] enzyme  
