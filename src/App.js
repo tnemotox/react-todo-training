@@ -165,7 +165,7 @@ App = DragDropContext(HTML5Backend)(App);
 export default connect(
   state => {
     return {
-      cards: state.TodoReducer.cards,
+      cards: state.TodoReducer.toJS().cards,
       lane: state.LaneReducer
     };
   },
