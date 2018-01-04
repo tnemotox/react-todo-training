@@ -25,7 +25,7 @@ export const toJS = WrappedComponent => {
       }, {});
     }
 
-    // 新しいPropsを受け取るたびに新しいPropsを渡す
+    // Propsを受け取ったら新しいPropsか確認してその結果を渡す
     componentWillReceiveProps(nextProps) {
       this.newProps = this.updateNewProps(nextProps);
     }
