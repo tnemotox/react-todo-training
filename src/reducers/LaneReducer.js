@@ -1,8 +1,11 @@
 import { handleActions } from 'redux-actions'
 
-// initialStateだけを持つ
+/**
+ * LaneReducer
+ * initialStateだけを持つ
+ */
 export default handleActions({
-
+  // 処理なし
 }, {
   TODO: {
     ID: 1,

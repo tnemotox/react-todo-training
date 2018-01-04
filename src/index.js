@@ -8,6 +8,7 @@ import {
 } from 'redux';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger'
+import { Iterable } from 'immutable';
 
 import App from './App';
 import TodoReducer from './reducers/TodoReducer';
@@ -15,14 +16,26 @@ import LaneReducer from './reducers/LaneReducer';
 
 ReactDOM.render(
   <Provider store={createStore(
-
     // 複数のReducerを利用する場合
     combineReducers({
       TodoReducer,
       LaneReducer
     }),
 
-    applyMiddleware(createLogger())
+    applyMiddleware(createLogger({
+      stateTransformer: (state) => {
+        let newState = {};
+
+        for (let i of Object.keys(state)) {
+          if (Iterable.isIterable(state[i])) {
+            newState[i] = state[i].toJS();
+          } else {
+            newState[i] = state[i];
+          }
+        }
+        return newState;
+      }
+    }))
   )}>
     <App/>
   </Provider>,
