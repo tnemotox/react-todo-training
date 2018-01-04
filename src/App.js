@@ -5,6 +5,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { toJS } from './ImmutableWrapper';
 import TodoAction from './actions/TodoAction';
 
 class App extends React.Component {
@@ -165,11 +166,11 @@ App = DragDropContext(HTML5Backend)(App);
 export default connect(
   state => {
     return {
-      cards: state.TodoReducer.toJS().cards,
+      cards: state.TodoReducer.get('cards'),
       lane: state.LaneReducer
     };
   },
   dispatch => {
     return bindActionCreators(TodoAction, dispatch);
   }
-)(App)
+)(toJS(App))

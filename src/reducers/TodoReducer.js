@@ -49,10 +49,7 @@ export default handleActions({
 
     return state.withMutations(s =>
       // タスクの完了状態を更新する
-      s.updateIn(['cards', cardIdx, 'tasks', taskIdx], task => {
-        console.log(task);
-        return task.set('isDone', !task.isDone)
-      })
+      s.updateIn(['cards', cardIdx, 'tasks', taskIdx], task => task.set('isDone', !task.isDone))
        // タスクが全て完了していたらカードを完了状態にする
        .updateIn(['cards', cardIdx], card => card.set('isDone', card.tasks.map(task => task.isDone).every(item => item)))
     );
