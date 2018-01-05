@@ -14,7 +14,8 @@ export default class CardModel extends Record({
   status: 1,
   tasks: List(),
   orderBy: 0,
-  isDone: false
+  isDone: false,
+  cache: null
 }) {
 
   /**

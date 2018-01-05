@@ -12,7 +12,6 @@ class App extends React.Component {
 
   // コンポーネントが最初に描画される前に1度だけ呼び出される関数
   componentWillMount() {
-    // カードの初期状態を
     const card1Tasks = [
       {
         id: 1,
@@ -136,6 +135,7 @@ class App extends React.Component {
     const todoCards = cards.filter(card => card.status === TODO.ID);
     const wipCards = cards.filter(card => card.status === WIP.ID);
     const doneCards = cards.filter(card => card.status === DONE.ID);
+    const maxSize = Math.max(todoCards.length, wipCards.length, doneCards.length);
 
     return (
       <div className="app">
@@ -144,18 +144,21 @@ class App extends React.Component {
           label={TODO.LABEL}
           cards={todoCards}
           actions={actions}
+          maxSize={maxSize}
         />
         <Lane
           id={WIP.ID}
           label={WIP.LABEL}
           cards={wipCards}
           actions={actions}
+          maxSize={maxSize}
         />
         <Lane
           id={DONE.ID}
           label={DONE.LABEL}
           cards={doneCards}
           actions={actions}
+          maxSize={maxSize}
         />
       </div>
     );
@@ -173,4 +176,4 @@ export default connect(
   dispatch => {
     return bindActionCreators(TodoAction, dispatch);
   }
-)(toJS(App))
+)(toJS(App));

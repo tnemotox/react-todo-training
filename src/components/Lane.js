@@ -23,6 +23,20 @@ class Lane extends React.Component {
     label: PropTypes.string.isRequired
   }
 
+  /**
+   * カードを移動した時に呼び出される関数
+   * @param sourceCard ドラッグ元のProps
+   * @param targetComponent ドロップ先のコンポーネント
+   */
+  moveCard(sourceCard, targetComponent) {
+    // カードがドラッグされる前に属していたレーンから削除する
+    let sourceLaneCards = sourceCard.laneCards.filter(card => card.id !== sourceCard.id);
+    sourceCard.updateLaneState(sourceLaneCards);
+    // カードがドロップされたレーンに追加する
+    let targetLaneCards = [].concat(targetComponent.state.cards, sourceCard);
+    targetComponent.updateLaneState(targetLaneCards);
+  }
+
   // orderByの昇順にソート
   compare(a, b) {
     return a.orderBy > b.orderBy ? 1 : -1;
@@ -32,23 +46,25 @@ class Lane extends React.Component {
     const cards = this.props.cards.sort(this.compare).map(card => {
       return (
         <Card
+          actions={this.props.actions}
           description={card.description}
           id={card.id}
           isDone={card.isDone}
           key={card.id}
           label={card.label}
           laneCards={this.props.cards}
-          laneId={this.props.id}
+          status={this.props.id}
           orderBy={card.orderBy}
           tasks={card.tasks}
-          actions={this.props.actions}
         />
       );
     });
 
     return (
       <Col className={"lane"} md={4} xs={4}
-           ref={instance => this.props.connectDropTarget(findDOMNode(instance))}>
+           ref={instance => this.props.connectDropTarget(findDOMNode(instance))}
+           style={{ height: (this.props.maxSize + 1) * 250 }}
+      >
         <h2>{this.props.label}</h2>
         {cards}
       </Col>
@@ -65,9 +81,11 @@ export default DropTarget(
      * @param monitor ドロップ先のモニタリング情報
      * @param component ドロップ先となるLaneコンポーネントのインスタンス
      */
-    drop(props, monitor, component) {
-      // monitor.getItem()では、beginDragで返却した値を取得できる
-      component.props.actions.moveCard(monitor.getItem(), component.props.id);
+    hover(props, monitor, component) {
+      const draggingCard = component.props.cards.find(card => card.id === monitor.getItem().id);
+      if (!draggingCard || draggingCard.status !== props.id) {
+        component.props.actions.moveCardLast(monitor.getItem(), props);
+      }
     },
   },
   (connect, monitor) => ({

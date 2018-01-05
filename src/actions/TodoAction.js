@@ -5,27 +5,37 @@ import { createActions } from 'redux-actions'
  */
 export default createActions({
 
-  /**
-   * カードを追加する
-   * @param cards カード
-   * @returns Actionオブジェクト
-   */
+  'ADD_NEW_CARD': () => {
+  },
+
   'ADD_CARDS': cards => {
     return {
       cards
     }
   },
 
-  /**
-   * カードを移動する
-   * @param sourceCard 移動元カード
-   * @param targetLaneId 移動先レーンID
-   * @returns Actionオブジェクト
-   */
-  'MOVE_CARD': (sourceCard, targetLaneId) => {
+  'REMOVE_CARDS': cardIds => cardIds,
+
+  'ADD_TASK': cardId => cardId,
+
+  'REMOVE_TASK': (cardId, taskId) => {
+    return {
+      cardId,
+      taskId
+    };
+  },
+
+  'MOVE_CARD_LAST': (sourceCard, targetLane) => {
     return {
       sourceCard,
-      targetLaneId
+      targetLane
+    }
+  },
+
+  'MOVE_CARD_HOVER': (sourceCard, targetCard) => {
+    return {
+      sourceCard,
+      targetCard
     }
   },
 
@@ -40,5 +50,23 @@ export default createActions({
       cardId,
       taskId
     }
-  }
+  },
+
+  'CACHE_STATE': id => {
+    return {
+      cardId: id
+    }
+  },
+
+  'ROLLBACK_STATE': id => {
+    return {
+      cardId: id
+    }
+  },
+
+  'COMMIT_STATE': id => {
+    return {
+      cardId: id
+    }
+  },
 });

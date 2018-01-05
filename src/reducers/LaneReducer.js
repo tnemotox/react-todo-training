@@ -1,12 +1,9 @@
+import { fromJS } from 'immutable';
 import { handleActions } from 'redux-actions'
 
-/**
- * LaneReducer
- * initialStateだけを持つ
- */
 export default handleActions({
-  // 処理なし
-}, {
+
+}, fromJS({
   TODO: {
     ID: 1,
     LABEL: 'TODO'
@@ -19,4 +16,4 @@ export default handleActions({
     ID: 3,
     LABEL: 'DONE'
   },
-});
+}));

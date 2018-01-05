@@ -21,9 +21,10 @@ ReactDOM.render(
       TodoReducer,
       LaneReducer
     }),
-
+    // immutable.jsとcombineReducerを利用した場合のredux-loggerの設定
+    // https://github.com/evgenyrodionov/redux-logger#transform-immutable-with-combinereducers
     applyMiddleware(createLogger({
-      // https://github.com/evgenyrodionov/redux-logger#transform-immutable-with-combinereducers
+
       stateTransformer: (state) => {
         let newState = {};
 

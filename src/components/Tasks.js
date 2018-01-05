@@ -15,7 +15,7 @@ export default class Tasks extends React.Component {
    */
   static propTypes = {
     cardId: PropTypes.number.isRequired,
-    tasks: PropTypes.array,
+    tasks: PropTypes.array
   }
 
   // orderByの昇順にソート
@@ -34,14 +34,15 @@ export default class Tasks extends React.Component {
         key={task.id}
         onClick={this.toggleTask.bind(this, task)}
         checked={task.isDone}
-        readOnly>
+        readOnly
+      >
         {task.isDone ? <del>{task.label}</del> : task.label}
       </Checkbox>
     ));
 
     return (
       <div className="tasks">
-        {tasks}
+        {tasks.length === 0 ? <div style={{padding: '10px'}}>タスクがありません</div> : tasks}
       </div>
     );
   }
