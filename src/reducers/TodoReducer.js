@@ -2,7 +2,7 @@ import CardModel from '../models/CardModel';
 import TaskModel from '../models/TaskModel';
 import TodoModel from '../models/TodoModel';
 import TodoAction from '../actions/TodoAction';
-import { handleActions } from 'redux-actions'
+import { handleActions } from 'redux-actions';
 
 export default handleActions({
 
@@ -11,8 +11,12 @@ export default handleActions({
     return state.update('cards', cards => cards.push(...newCards.map(card => new CardModel(card))));
   },
 
-  [TodoAction.addNewCard]: state => {
-    return state.push(new CardModel());
+  [TodoAction.addNewCard]: (state, action) => {
+    return state.updateIn(['cards'], cards => cards.push(new CardModel({
+      label: action.payload.label,
+      orderByAll: cards.size + 1,
+      orderBy: cards.filter(card => card.status === 1).size + 1
+    })));
   },
 
   [TodoAction.removeCards]: (state, action) => {
@@ -38,7 +42,7 @@ export default handleActions({
     );
   },
 
-  [TodoAction.moveCardHover]: (state, action) => {
+  [TodoAction.moveKanbanHover]: (state, action) => {
     const {
       sourceCard,
       targetCard
@@ -54,7 +58,7 @@ export default handleActions({
          let targetIdx = 0;
 
          return cards
-           // 現時点での並び順の昇順に処理
+         // 現時点での並び順の昇順に処理
            .sort((a, b) => a.orderBy < b.orderBy ? -1 : 1)
            // 移動前、移動後のレーンのカードのorderByを振り直し
            .map(card => {
@@ -86,7 +90,7 @@ export default handleActions({
     });
   },
 
-  [TodoAction.moveCardLast]: (state, action) => {
+  [TodoAction.moveKanbanLast]: (state, action) => {
     const {
       sourceCard,
       targetLane
@@ -119,6 +123,39 @@ export default handleActions({
              }
            })
        })
+    });
+  },
+
+  [TodoAction.moveCards]: (state, action) => {
+    const {
+      sourceCard,
+      targetCard
+    } = action.payload;
+
+    return state.withMutations(s => {
+      s.updateIn(['cards'], cards => {
+        // 移動元、移動先の新しい並び順
+        let newOrderByAll = 0;
+
+        return cards
+        // 現時点での並び順の昇順に処理
+          .sort((a, b) => a.orderByAll < b.orderByAll ? -1 : 1)
+          // 移動前、移動後のレーンのカードのorderByAllを振り直し
+          .map(card => {
+            // 移動するカードの場合はhoverしているカードの順序とする
+            if (card.id === sourceCard.id) {
+              return card.set('orderByAll', targetCard.orderByAll);
+            }
+            else {
+              newOrderByAll++;
+              // 移動したカードと同じ順序の場合はもう一度加算
+              if (newOrderByAll === targetCard.orderByAll) {
+                newOrderByAll++;
+              }
+              return card.set('orderByAll', newOrderByAll);
+            }
+          })
+      });
     });
   },
 

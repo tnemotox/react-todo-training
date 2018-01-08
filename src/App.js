@@ -1,12 +1,26 @@
 import React from 'react';
 import './App.css';
-import Lane from './components/Lane'
+import {
+  Navbar,
+  Nav,
+  NavItem
+} from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
+import {
+  Route,
+  Redirect,
+  Switch
+} from 'react-router-dom'
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { toJS } from './ImmutableWrapper';
 import TodoAction from './actions/TodoAction';
+import LaneAction from './actions/LaneAction';
+
+import Kanban from './components/Kanban';
+import Cards from './components/Cards';
 
 class App extends React.Component {
 
@@ -95,6 +109,7 @@ class App extends React.Component {
         status: 1,
         tasks: card1Tasks,
         orderBy: 1,
+        orderByAll: 2,
         isDone: false
       },
       {
@@ -104,6 +119,7 @@ class App extends React.Component {
         status: 1,
         tasks: card2Tasks,
         orderBy: 2,
+        orderByAll: 3,
         isDone: false
       },
       {
@@ -113,53 +129,76 @@ class App extends React.Component {
         status: 3,
         tasks: [],
         orderBy: 1,
+        orderByAll: 1,
         isDone: true
       }
     ];
     this.props.addCards(cards);
+  }
+  push() {
+    this.props.routingPush('kanban');
+    this.props.changeLaneName(1, 'Hoge')
+  }
+  go() {
+    this.props.routingGoForward();
+  }
+  back() {
+    this.props.routingGoBack();
   }
 
   render() {
     const {
       lane,
       cards,
+      match,
+      history,
+      location,
+      staticContext,
       ...actions
     } = this.props;
-    const {
-      TODO,
-      WIP,
-      DONE
-    } = lane;
-
-    // レーンごとのカードを抽出する
-    const todoCards = cards.filter(card => card.status === TODO.ID);
-    const wipCards = cards.filter(card => card.status === WIP.ID);
-    const doneCards = cards.filter(card => card.status === DONE.ID);
-    const maxSize = Math.max(todoCards.length, wipCards.length, doneCards.length);
+    console.log(history);
 
     return (
       <div className="app">
-        <Lane
-          id={TODO.ID}
-          label={TODO.LABEL}
-          cards={todoCards}
-          actions={actions}
-          maxSize={maxSize}
-        />
-        <Lane
-          id={WIP.ID}
-          label={WIP.LABEL}
-          cards={wipCards}
-          actions={actions}
-          maxSize={maxSize}
-        />
-        <Lane
-          id={DONE.ID}
-          label={DONE.LABEL}
-          cards={doneCards}
-          actions={actions}
-          maxSize={maxSize}
-        />
+        <Navbar inverse collapseOnSelect>
+          <Navbar.Header>
+            <Navbar.Brand>
+              React Todo Training
+            </Navbar.Brand>
+            <Navbar.Toggle />
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <Nav>
+              <LinkContainer to="cards">
+                <NavItem eventKey={1}>
+                  カード一覧
+                </NavItem>
+              </LinkContainer>
+              <LinkContainer to="kanban">
+                <NavItem eventKey={2}>
+                  カンバン
+                </NavItem>
+              </LinkContainer>
+              <NavItem eventKey={3} onClick={this.push.bind(this)}>
+                push
+              </NavItem>
+              <NavItem eventKey={3} onClick={this.back.bind(this)}>
+                back
+              </NavItem>
+              <NavItem eventKey={3} onClick={this.go.bind(this)}>
+                go
+              </NavItem>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+
+        <Switch>
+          <Route path={`${match.path}cards`}
+                 render={props => <Cards lane={lane} cards={cards} actions={actions} {...props} />}/>
+          <Route path={`${match.path}kanban`}
+                 render={props => <Kanban lane={lane} cards={cards} actions={actions} {...props} />}/>
+          <Redirect to='/kanban'/>
+        </Switch>
       </div>
     );
   }
@@ -174,6 +213,9 @@ export default connect(
     };
   },
   dispatch => {
-    return bindActionCreators(TodoAction, dispatch);
+    return bindActionCreators(Object.assign({},
+      TodoAction,
+      LaneAction
+    ), dispatch);
   }
 )(toJS(App));

@@ -2,6 +2,10 @@ h1 {
     padding: 10px;
 }
 
+h2 {
+    margin-bottom: 20px;
+}
+
 .lane h2 {
     text-align: center;
 }
@@ -20,6 +24,7 @@ h1 {
 
 .tasks {
     text-align: left;
+    margin-bottom: 20px;
 }
 
 .panel-body {
@@ -34,4 +39,31 @@ h1 {
     border: dashed 1px lightgray;
     padding: 5px;
     width: 100%;
+    word-break: break-all;
+}
+
+.kanban-buttons {
+    display: table-cell;
+    vertical-align: bottom;
+}
+
+.todo {
+    background-color: #c4e3f3;
+    color: #31708f;
+    width: 50px;
+    margin-right: 10px;
+}
+
+.wip {
+    background-color: #faf2cc;
+    color: #8a6d3b;
+    width: 50px;
+    margin-right: 10px;
+}
+
+.done {
+    background-color: #d0e9c6;
+    color: #3c763d;
+    width: 50px;
+    margin-right: 10px;
 }

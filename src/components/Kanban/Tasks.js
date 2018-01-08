@@ -42,7 +42,7 @@ export default class Tasks extends React.Component {
 
     return (
       <div className="tasks">
-        {tasks.length === 0 ? <div style={{padding: '10px'}}>タスクがありません</div> : tasks}
+        {tasks.length === 0 ? <div style={{padding: '10px 10px 0 10px'}}>タスクがありません</div> : tasks}
       </div>
     );
   }

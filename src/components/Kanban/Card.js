@@ -1,9 +1,9 @@
 import React from 'react';
 import { findDOMNode } from 'react-dom';
 import {
-  Panel,
   Accordion,
-  Button
+  Button,
+  Panel
 } from 'react-bootstrap';
 import {
   DragSource,
@@ -90,9 +90,10 @@ class Card extends React.Component {
             tasks={this.props.tasks}
             actions={this.props.actions}
           />
-          <Button bsStyle="success">タスク追加</Button>&emsp;
-          <Button bsStyle="primary">カード編集</Button>&emsp;
-          <Button bsStyle="danger">カード削除</Button>
+          <div className="kanban-buttons">
+            <Button bsStyle="success"><span className="glyphicon glyphicon-edit"></span>&emsp;編集</Button>&emsp;
+            <Button bsStyle="danger"><span className="glyphicon glyphicon-remove"></span>&emsp;削除</Button>&emsp;
+          </div>
         </Panel>
       </Accordion>
     );
@@ -100,7 +101,7 @@ class Card extends React.Component {
 }
 
 Card = DragSource(
-  'CARD',
+  'KANBAN',
   {
     /**
      * ドラッグ開始時に呼び出されるハンドラ
@@ -126,11 +127,11 @@ Card = DragSource(
     draggingCard: monitor.getItem(),
   }))(Card);
 export default DropTarget(
-  'CARD',
+  'KANBAN',
   {
     hover(props, monitor, component) {
       if (props.id !== monitor.getItem().id) {
-        component.props.actions.moveCardHover(monitor.getItem(), props);
+        component.props.actions.moveKanbanHover(monitor.getItem(), props);
       }
     }
   },

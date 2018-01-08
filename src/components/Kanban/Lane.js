@@ -1,8 +1,6 @@
 import React from 'react';
 import { findDOMNode } from 'react-dom';
-import {
-  Col
-} from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import { DropTarget } from 'react-dnd';
 import PropTypes from 'prop-types';
 import Card from './Card';
@@ -73,7 +71,7 @@ class Lane extends React.Component {
 }
 
 export default DropTarget(
-  'CARD',
+  'KANBAN',
   {
     /**
      * Cardコンポーネントがドロップされた時に呼び出されるハンドラ
@@ -84,7 +82,7 @@ export default DropTarget(
     hover(props, monitor, component) {
       const draggingCard = component.props.cards.find(card => card.id === monitor.getItem().id);
       if (!draggingCard || draggingCard.status !== props.id) {
-        component.props.actions.moveCardLast(monitor.getItem(), props);
+        component.props.actions.moveKanbanLast(monitor.getItem(), props);
       }
     },
   },

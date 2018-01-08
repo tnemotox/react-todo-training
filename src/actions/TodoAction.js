@@ -5,7 +5,10 @@ import { createActions } from 'redux-actions'
  */
 export default createActions({
 
-  'ADD_NEW_CARD': () => {
+  'ADD_NEW_CARD': (label) => {
+    return {
+      label
+    }
   },
 
   'ADD_CARDS': cards => {
@@ -25,18 +28,25 @@ export default createActions({
     };
   },
 
-  'MOVE_CARD_LAST': (sourceCard, targetLane) => {
+  'MOVE_KANBAN_LAST': (sourceCard, targetLane) => {
     return {
       sourceCard,
       targetLane
     }
   },
 
-  'MOVE_CARD_HOVER': (sourceCard, targetCard) => {
+  'MOVE_KANBAN_HOVER': (sourceCard, targetCard) => {
     return {
       sourceCard,
       targetCard
     }
+  },
+
+  'MOVE_CARDS': (sourceCard, targetCard) => {
+    return {
+      sourceCard,
+      targetCard
+    };
   },
 
   /**
