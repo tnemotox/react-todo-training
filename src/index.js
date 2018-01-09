@@ -19,26 +19,7 @@ import createHistory from 'history/createBrowserHistory'
 import App from './App';
 import TodoReducer from './reducers/TodoReducer';
 import LaneReducer from './reducers/LaneReducer';
-import rouingWithStateMiddleware from './RoutingWithStateMiddleware';
 
-window.history.replaceState({
-  state: {
-    LaneReducer: {
-      TODO: {
-        ID: 1,
-        LABEL: 'TODO'
-      },
-      WIP: {
-        ID: 2,
-        LABEL: 'WIP'
-      },
-      DONE: {
-        ID: 3,
-        LABEL: 'DONE'
-      },
-    }
-  }
-}, null, '/kanban');
 const history = createHistory();
 const store = createStore(
   // 複数のReducerを利用する場合
@@ -49,7 +30,7 @@ const store = createStore(
   }),
   // immutable.jsとcombineReducerを利用した場合のredux-loggerの設定
   // https://github.com/evgenyrodionov/redux-logger#transform-immutable-with-combinereducers
-  applyMiddleware(rouingWithStateMiddleware(), routerMiddleware(history), createLogger({
+  applyMiddleware(routerMiddleware(history), createLogger({
 
     stateTransformer: (state) => {
       let newState = {};

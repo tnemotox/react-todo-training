@@ -17,7 +17,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { toJS } from './ImmutableWrapper';
 import TodoAction from './actions/TodoAction';
-import LaneAction from './actions/LaneAction';
 
 import Kanban from './components/Kanban';
 import Cards from './components/Cards';
@@ -135,16 +134,6 @@ class App extends React.Component {
     ];
     this.props.addCards(cards);
   }
-  push() {
-    this.props.routingPush('kanban');
-    this.props.changeLaneName(1, 'Hoge')
-  }
-  go() {
-    this.props.routingGoForward();
-  }
-  back() {
-    this.props.routingGoBack();
-  }
 
   render() {
     const {
@@ -156,7 +145,6 @@ class App extends React.Component {
       staticContext,
       ...actions
     } = this.props;
-    console.log(history);
 
     return (
       <div className="app">
@@ -165,7 +153,7 @@ class App extends React.Component {
             <Navbar.Brand>
               React Todo Training
             </Navbar.Brand>
-            <Navbar.Toggle />
+            <Navbar.Toggle/>
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
@@ -179,15 +167,6 @@ class App extends React.Component {
                   カンバン
                 </NavItem>
               </LinkContainer>
-              <NavItem eventKey={3} onClick={this.push.bind(this)}>
-                push
-              </NavItem>
-              <NavItem eventKey={3} onClick={this.back.bind(this)}>
-                back
-              </NavItem>
-              <NavItem eventKey={3} onClick={this.go.bind(this)}>
-                go
-              </NavItem>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
@@ -213,9 +192,6 @@ export default connect(
     };
   },
   dispatch => {
-    return bindActionCreators(Object.assign({},
-      TodoAction,
-      LaneAction
-    ), dispatch);
+    return bindActionCreators(TodoAction, dispatch);
   }
 )(toJS(App));
